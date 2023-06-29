@@ -1,0 +1,107 @@
+# Data import --------------------------------------------------------------------
+
+
+Intelligentie.partnerkeuze <- read.csv("~/Downloads/Intelligentie.partnerkeuze.csv")
+table(Intelligentie.partnerkeuze$Geslacht)
+
+
+# data selecteren ---------------------------------------------------------
+
+Intelligentie.mannen <- Intelligentie.partnerkeuze[Intelligentie.partnerkeuze$Geslacht == '1',]
+Intelligentie.vrouwen <- Intelligentie.partnerkeuze[Intelligentie.partnerkeuze$Geslacht == '2',]
+
+totale.gemiddelde <- rowMeans(Intelligentie.partnerkeuze, na.rm = TRUE)
+mannen.gemiddelde <- rowMeans(Intelligentie.mannen, na.rm = TRUE)
+vrouwen.gemiddelde <- rowMeans(Intelligentie.vrouwen, na.rm = TRUE)
+
+# row totaal - niet significant voor onderzoek ----------------------------
+mannen.totaal <- rowSums(Intelligentie.mannen, na.rm = TRUE)
+mean(mannen.totaal)
+
+vrouwen.totaal <- rowSums(Intelligentie.vrouwen, na.rm = TRUE)
+mean(vrouwen.totaal)
+
+# gemiddelden  -------------------------------------------------------------
+
+ig.mean.total <- mean(totale.gemiddelde)
+ig.mean.men <- mean(mannen.gemiddelde)
+ig.mean.women <- mean(vrouwen.gemiddelde)
+
+# sd  ---------------------------------------------------------------------
+ig.sd.men <- sd(mannen.gemiddelde)
+ig.sd.women <- sd(vrouwen.gemiddelde)
+
+#er is gekozen voor een gemiddelde score op de questionnaire i.p.v. totaal score
+#door de missende (NA) waarde van enkele deelnemers
+
+# Beschrijvende statistiek- figuur --------------------------------------------------------------------
+
+boxplot(mannen.gemiddelde, vrouwen.gemiddelde)
+
+# package downloads -------------------------------------------------------
+
+install.packages('car')
+library('car')
+
+install.packages('psych')
+library('psych')
+
+# Cronbach's alpha --------------------------------------------------------
+alpha(Intelligentie.partnerkeuze)
+
+# Assumpties checken ------------------------------------------------------
+leveneTest(mannen.gemiddelde,vrouwen.gemiddelde) #varianties
+shapiro.test(mannen.gemiddelde) #normaal verdeling mannen
+shapiro.test(vrouwen.gemiddelde) #normaal verdeling vrouwen
+
+# var.test(mannen.gemiddelde,vrouwen.gemiddelde)
+
+# toetsende statistiek ----------------------------------------------------
+
+t.test(mannen.gemiddelde, vrouwen.gemiddelde,
+       alternative = "two.sided",
+       var.equal = TRUE, na.rm = TRUE)
+
+# Cohen's D  --------------------------------------------------------------
+# Hoeft niet worden uitgevoerd.
+# Namelijk, geen significante p-waarde.
+
+
+
+# Barplot maken -----------------------------------------------------------
+mean.ig <- c(ig.mean.men,ig.mean.women)
+sd.ig <- c(ig.sd.men,ig.sd.women)
+
+ig.score <- barplot(height = mean.ig,
+        main = ("Gemiddelde score: voorkeur voor intelligentie bij een partner"),
+        cex.main= 0.95,
+        xlab = ("Geslacht"),
+        ylab = ("Gemiddelde score per vraag"),
+        names=c("Mannen", "Vrouwen"),
+        ylim = c(0,5),
+        col=c('#7292F1','#E78FE3'))
+
+# errorbar -----------------------------------------------------------------
+arrows(x0 = ig.score,
+       y0 = mean.ig + sd.ig,
+       y1 = mean.ig - sd.ig,
+       angle = 90,
+       code =3,
+       length = 0.1)
+
+
+# Figuur errors - niet werkende code ------------------------------------------------------------------
+attach(Intelligentie.partnerkeuze)
+yeh <- table(Geslacht, intelligentie.gemiddelde.mannen)
+barplot(yeh)
+
+barplot(mannen.gemiddelde)
+
+ggplot(Intelligentie.partnerkeu
+       ze, aes(x = Geslacht, y = totale.gemiddelde)) + 
+  geom_bar(stat = "identity")
+
+barplot(intelligentie.gemiddelde.mannen,intelligentie.gemiddelde.vrouwen)
+ggplot(Intelligentie.partnerkeuze, aes(Geslacht, intelligentie.gemiddelde.mannen) + geom_bar(stat ="identity")
+
+       
